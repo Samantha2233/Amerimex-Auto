@@ -18,12 +18,17 @@ class App extends Component {
     }
   }
 
+  async componentDidMount() {
+    const cars = await carService.index();
+    this.setState({ cars });
+  }
+
   handleCarSubmission = async newCarData => {
     const newCar = await carService.create(newCarData);
     console.log('newCar from handleCarSubmission in App', newCar);
     this.setState(state => ({
       cars: [...state.cars, newCar]
-    }))
+    }));
   }
 
 
@@ -32,9 +37,11 @@ class App extends Component {
       <div className="App" >
         <Nav />
         <HomePage />
-        <Tables />
         <CarForm
           handleCarSubmission={this.handleCarSubmission}
+        />
+        <Tables
+          cars={this.state.cars}
         />
       </div>
     );

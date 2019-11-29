@@ -1,7 +1,13 @@
 var Car = require('../models/car');
 
 module.exports = {
+  index,
   create
+}
+
+async function index(req, res) {
+  const cars = await Car.find({});
+  res.json(cars);
 }
 
 async function create(req, res) {

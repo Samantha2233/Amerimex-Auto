@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { Switch, Route } from 'react-router-dom';
 
 import carService from './utils/carService';
 
 import HomePage from './pages/HomePage/HomePage';
-import Tables from './pages/Tables/Tables';
+import IndexPage from './pages/IndexPage/IndexPage';
+import DetailPage from './pages/DetailPage/DetailPage';
 
 import Nav from './components/Nav/Nav';
 import CarForm from './components/CarForm/CarForm';
@@ -36,13 +38,15 @@ class App extends Component {
     return (
       <div className="App" >
         <Nav />
-        <HomePage />
+        <Switch>
+          <Route exact path='/' component={HomePage} />
+          <Route path='/index' render={(props) => <IndexPage cars={this.state.cars} />} />
+          <Route path='/index/:carId' component={DetailPage} />
+        </Switch>
         <CarForm
           handleCarSubmission={this.handleCarSubmission}
         />
-        <Tables
-          cars={this.state.cars}
-        />
+        <DetailPage />
       </div>
     );
   }

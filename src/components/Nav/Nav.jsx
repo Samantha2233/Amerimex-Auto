@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import './Nav.scss';
 
 class Nav extends Component {
@@ -6,11 +7,14 @@ class Nav extends Component {
     return (
       <div className='nav' >
         <div className='logo-and-links'>
-          <a href='#landing'>
+          <Link to='/'>
             <img className='logo' src='../../../images/amerimex-logo.png' alt='logo' />
-          </a>
+          </Link>
           <ul>
-            <li>Add Car</li>
+            <li
+              onClick={this.props.toggleCarForm}
+              carFormIsOpen={this.props.carFormIsOpen}
+            >Add Car</li>
             <li>Add Agreement</li>
           </ul>
         </div>

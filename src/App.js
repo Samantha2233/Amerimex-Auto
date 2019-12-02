@@ -16,10 +16,23 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      cars: []
+      cars: [],
+      searchField: '',
+      carFormIsOpen: false
     }
   }
 
+
+  // MODAL TOGGLER FUNCTIONS
+  toggleCarForm = () => {
+    this.setState({
+      carFormIsOpen: !this.state.carFormIsOpen
+    });
+  }
+
+
+
+  //  CAR FUNCTIONS
   async componentDidMount() {
     const cars = await carService.index();
     this.setState({ cars });
@@ -33,17 +46,53 @@ class App extends Component {
     }));
   }
 
+  handleUpdateCar = async updatedCarData => {
+    const updatedCar = await carService.update(updatedCarData);
+    const newCarsArray = this.state.cars.map(car =>
+      car._id === updatedCar._id ? updatedCar : car
+    );
+    this.setState(
+      { cars: newCarsArray }
+      // push history to /?
+    )
+  }
+
+
+
+
+  // SEACRH FUNCTION
+  handleSearch = e => {
+    this.setState({ searchField: e.target.value })
+  }
+
+
 
   render() {
+    const { cars, searchField } = this.state;
+    const filteredCars = cars.filter(car =>
+      car.purchaseDescription.toLowerCase().includes(searchField.toLowerCase())
+    )
+
     return (
       <div className="App" >
-        <Nav />
+        <Nav
+          carFormIsOpen={this.state.carFormIsOpen}
+          toggleCarForm={this.toggleCarForm}
+        />
         <Switch>
           <Route exact path='/' component={HomePage} />
-          <Route path='/index' render={(props) => <IndexPage cars={this.state.cars} />} />
+          <Route exact path='/index' render={(props) =>
+            <IndexPage
+              cars={filteredCars}
+              toggleCarForm={this.toggleCarForm}
+              searchField={this.state.searchField}
+              handleSearch={this.handleSearch}
+            />} />
           <Route path='/index/:carId' component={DetailPage} />
         </Switch>
         <CarForm
+          carFormIsOpen={this.state.carFormIsOpen}
+          toggleCarForm={this.toggleCarForm}
           handleCarSubmission={this.handleCarSubmission}
         />
         <DetailPage />
